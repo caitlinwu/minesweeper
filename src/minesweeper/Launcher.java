@@ -1,19 +1,17 @@
 package minesweeper;
 
-import java.awt.Dimension;
-
 import javax.swing.JFrame;
 
-import ui.Tile;
+import ui.Field;
 
 public class Launcher {
     public static void main(String[] args) {
         JFrame frame = new JFrame();
-        Tile t = new Tile();
-        frame.setSize(new Dimension(200, 200));
+        Field f = new Field();
+        f.setField(24, 24, 99);
         frame.setVisible(true);
         frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
-        frame.add(t);
+        frame.add(f);
         frame.pack();
     }
 

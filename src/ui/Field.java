@@ -1,18 +1,53 @@
 package ui;
 
+import java.awt.GridLayout;
+import java.awt.event.MouseAdapter;
+import java.awt.event.MouseEvent;
 import java.util.ArrayList;
 import java.util.Random;
 
-public class Field {
+import javax.swing.JPanel;
+
+public class Field extends JPanel{
     private ArrayList<ArrayList<Tile>> tiles = new ArrayList<ArrayList<Tile>>();
 
-    private Random r = new Random();  // TODO seed
+    private Random r = new Random(Double.doubleToLongBits(Math.random()));
     private int clicks = 0;
     private int bombs = 0;
     private int height = 0;
     private int width = 0;
 
+    public class ButtonAdapter extends MouseAdapter{
+        private int x;
+        private int y;
+        private long time = System.currentTimeMillis();
+        public ButtonAdapter(int x, int y) {
+            super();
+            this.x = x;
+            this.y = y;
+
+        }
+        @Override
+        public void mousePressed(MouseEvent e) {
+            this.time = System.currentTimeMillis();
+        }
+
+        @Override
+        public void mouseReleased(MouseEvent e){
+            if (time-System.currentTimeMillis() > 1000) return;
+            if (e.getButton() == MouseEvent.BUTTON1) {
+                Field.this.click(x, y);
+            }
+            else if (e.getButton() == MouseEvent.BUTTON3) {
+                Field.this.flag(x, y);
+            }
+            Field.this.print();
+        }
+
+    }
+
     public Field() {
+        super();
 
     }
 
@@ -21,10 +56,14 @@ public class Field {
         this.bombs = bombs;
         this.height = height;
         this.width = width;
+        this.setLayout(new GridLayout(height, width));
         for (int i = 0; i < height; i++) {
             ArrayList<Tile> temps = new ArrayList<Tile>();
             for (int j =0; j< width; j++) {
-                temps.add(new Tile());
+                Tile t = new Tile();
+                t.addMouseListener(new ButtonAdapter(i, j));
+                temps.add(t);
+                this.add(t);
             }
             tiles.add(temps);
         }
@@ -64,9 +103,11 @@ public class Field {
         if (tiles.get(x).get(y).getState() == -1) {
             System.out.println("you died");
         }
-        if (clicks == height * width - bombs)
+        else if (clicks == height * width - bombs) {
             System.out.println("win");
+        }
     }
+
 
     public void clickhelper(int x, int y) {
         if (tiles.get(x).get(y).isClicked()) return;

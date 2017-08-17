@@ -1,5 +1,7 @@
 package ui;
 
+import java.awt.Dimension;
+
 import javax.swing.JButton;
 
 public class Tile extends JButton{
@@ -9,6 +11,7 @@ public class Tile extends JButton{
 
     public Tile() {
         super();
+        setPreferredSize(new Dimension(50, 50));
     }
 
     public void setState(int state) {
@@ -20,11 +23,19 @@ public class Tile extends JButton{
     }
 
     public void click() {
-        if (!flagged) clicked = true;
+        if (!flagged) {
+            clicked = true;
+            setText(Integer.toString(state));
+        }
+
     }
 
     public void flagState() {
-        if(!clicked) flagged = !flagged;
+        if(!clicked) {
+            flagged = !flagged;
+            if (flagged) setText("f");
+            else setText("");
+        }
     }
 
     public boolean isDead() {
